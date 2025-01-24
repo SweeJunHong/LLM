@@ -1,4 +1,1 @@
-"# LLM" 
-"# LLM" 
-"# LLM" 
-"#LLM" 
+Personalized NLP Learning Assistant with RAG and multi-model integration using LangChain, FAISS, Cohere Rerank, and GPT-4.
