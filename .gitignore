@@ -24,3 +24,8 @@ __pycache__/
 
 # Windows specific
 Thumbs.db
+
+#index
+faiss_index/
+index.faiss
+index.pkl
