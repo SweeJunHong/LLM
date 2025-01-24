@@ -1,0 +1,195 @@
+Physical-Layer Security
+From Information Theory to Security Engineering
+This complete guide to physical-layer security presents the theoretical foundations, practical implementation, challenges, and benefits of a groundbreaking new model for secure
+communication. Using a bottom-up approach from the link level all the way to end-toend architectures, it provides essential practical tools that enable graduate students,
+industry professionals, and researchers to build more secure systems by exploiting the
+noise inherent to communication channels.
+The book begins with a self-contained explanation of the information-theoretic limits
+of secure communications at the physical layer. It then goes on to develop practical
+coding schemes, building on the theoretical insights and enabling readers to understand
+the challenges and opportunities related to the design of physical-layer security schemes.
+Finally, applications to multi-user communications and network coding are also included.
+Matthieu Bloch is an Assistant Professor in the School of Electrical Engineering of
+the Georgia Institute of Technology. He received a Ph.D. in Engineering Science from
+the Universite de Franche-Comt ´ e, Besanc ´ ¸on, France, in 2006, and a Ph.D. in Electrical
+Engineering from the Georgia Institute of Technology in 2008. His research interests are
+in the areas of information theory, error-control coding, wireless communications, and
+quantum cryptography.
+Joao Barros ˜ is an Associate Professor in the Department of Electrical and Computer
+Engineering of the Faculdade de Engenharia da Universidade do Porto, the Head of
+the Porto Delegation of the Instituto de Telecomunicac¸oes, Portugal, and a Visiting ˜
+Professor at the Massachusetts Institute of Technology. He received his Ph.D. in Electrical
+Engineering and Information Technology from the Technische Universitat M ¨ unchen ¨
+(TUM), Germany, in 2004 and has since published extensively in the general areas of
+information theory, communication networks, and security. He has taught short courses
+and tutorials at various institutions and received a Best Teaching Award from the Bavarian
+State Ministry of Sciences and the Arts, as well as the 2010 IEEE ComSoc Young
+Researcher Award for Europe, the Middle East, and Af
+
+Abbreviations
+AES Advanced Encryption Standard
+AWGN additive white Gaussian noise
+BC broadcast channel
+BCC broadcast channel with confidential messages
+BEC binary erasure channel
+BSC binary symmetric channel
+CA certification authority
+DES Data Encryption Standard
+DMC discrete memoryless channel
+DMS discrete memoryless source
+DSRC Dedicated Short-Range Communication
+DSS direct sequence spreading
+DWTC degraded wiretap channel
+EAP Extensible Authentication Protocol
+EPC Electronic Product Code
+ESP Encapsulating Security Payload
+FH frequency hopping
+GPRS General Packet Radio Service
+GSM Global System for Mobile Communications
+IETF Internet Engineering Task Force
+IP Internet Protocol
+LDPC low-density parity-check
+LLC logical link control
+LLR log-likelihood ratio
+LPI low probability of intercept
+LS least square
+LTE Long Term Evolution
+MAC multiple-access channel
+MIMO multiple-input multiple-output
+NFC near-field communication
+NIST National Institute of Standards and Technology, USA
+OSI open system interconnection
+PKI public key infrastructure
+RFID radio-frequency identification
+xvi List of abbreviations
+RSA Rivest–Shamir–Adleman
+SIM subscriber identity module
+SSL Secure Socket Layer
+TCP Transmission Control Protocol
+TDD time-division duplex
+TLS transport layer security
+TWWTC two-way wiretap channel
+UMTS Universal Mobile Telecommunication System
+WTC Wiretap channel
+XOR exclusive OR
+An information-theoretic approach to
+physical-layer security
+A simple look at today’s information and communication infrastructure is sufficient for
+one to appreciate the elegance of the layered networking architecture. As networks flourish worldwide, the fundamental problems of transmission, routing, resource allocation,
+end-to-end reliability, and congestion control are assigned to different layers of protocols, each with its own specific tools and network abstractions. However, the conceptual
+beauty of the layered protocol stack is not easily found when we turn our attention to
+the issue of network security. In the early days of the Internet, possibly because network
+access was very limited and tightly controlled, network security was not yet viewed
+as a primary concern for computer users and system administrators. This perception
+changed with the increase in network connections. Technical solutions, such as personnel
+access controls, password protection, and end-to-end encryption, were developed soon
+after. The steady growth in connectivity, fostered by the advent of electronic-commerce
+applications and the ubiquity of wireless communications, remains unhindered and has
+resulted in an unprecedented awareness of the importance of network security in all its
+guises.
+The standard practice of adding authentication and encryption to the existing protocols
+at the various communication layers has led to what could be rightly classified as a
+patchwork of security mechanisms. Given that data security is so critically important,
+it is reasonable to argue that security measures should be implemented at all layers
+where this can be done in a cost-effective manner. Interestingly, one layer has remained
+almost ignored in this shift towards secure communication: the physical layer, which lies
+at the lowest end of the protocol stack and converts bits of information into modulated
+signals. The state of affairs described is all the more striking since randomness, generally
+perceived as a key element of secrecy systems, is abundantly available in the stochastic
+nature of the noise that is intrinsic to the physical communication channel. On account
+of this observation, this book is entirely devoted to an emerging paradigm: security
+technologies that are embedded at the physical layer of the protocol architecture, a
+segment of the system where little security exists today.
+The absence of a comprehensive physical-layer security approach may be partly
+explained by invoking the way security issues are taught. A typical graduate course
+in cryptography and security often starts with a discussion of Shannon’s informationtheoretic notion of perfect secrecy, but information-theoretic security is quickly discarded and regarded as no more than a beautiful, yet unfeasible, theoretical construct. Such an exposition is designed to motivate the use of state-of-the-art encryption
+algorithms, which are insensitive to the characteristics of the communication channel
+and rely on mathematical operations assumed to be hard to compute, such as prime
+factorization.
+In this introductory chapter, we approach the subject in a different way. First, we
+give a bird’s-eye view of the basic concepts of information-theoretic security and how
+they differ from classical cryptography. Then, we discuss in general terms some of the
+major achievements of information-theoretic security and give some examples of its
+potential to strengthen the security of the physical layer. The main idea is to exploit the
+randomness of noisy communication channels to guarantee that a malicious eavesdropper
+obtains no information about the sent messages: security is ensured not relative to a hard
+mathematical problem but by the physical uncertainty inherent to the noisy channel.
+1.1 Shannon’s perfect secrecy
+Roughly speaking, the objective of secure communication is twofold; upon transmission
+of a message, the intended receivers should recover the message without errors while
+nobody else should acquire any information. This fundamental principle was formalized
+by Shannon in his 1949 paper [1], using the model of a secrecy system illustrated in
+Figure 1.1. A transmitter attempts to send a message M to a legitimate receiver by
+encoding it into a codeword X.
+1 During transmission, the codeword is observed by an
+eavesdropper (called the enemy cryptanalyst in Shannon’s original model) without any
+degradation, which corresponds to a worst-case scenario in which the communication
+channel is error-free. In real systems, where some form of noise is almost always present,
+this theoretical assumption corresponds to the existence of powerful error-correction
+mechanisms, which ensure that the message can be recovered with arbitrarily small
+probability of error. As is customary in cryptography, we often refer to the transmitter
+as “Alice,” to the legitimate receiver as “Bob,” and to the eavesdropper as “Eve.”
+In this worst-case scenario, the legitimate receiver must have some advantage over the
+eavesdropper, otherwise the latter would be able to recover the message M as well. The
+solution to this problem lies in the use of a secret key K, known only to the transmitter
+and the legitimate receiver. The codeword X is then obtained by computing a function
+of the message M and the secret key K.
+Shannon formalized the notion of secrecy by quantifying the average uncertainty of
+the eavesdropper. In information-theoretic terms, messages and codewords are treated
+as random variables, and secrecy is measured in terms of the conditional entropy of
+the message given the codeword, denoted as H(M|X). The quantity H(M|X) is also
+called the eavesdropper’s equivocation; perfect secrecy is achieved if the eavesdropper’s
+equivocation equals the a-priori uncertainty one could have about the message, that is
+H(M|X) = H(M) .
+This equation implies that the codeword X is statistically independent of the message
+M. The absence of correlation ensures that there exists no algorithm that would allow
+the cryptanalyst to extract information about the message. We will see in Chapter 3 that
+perfect secrecy can be achieved only if H(K)  H(M); that is, the uncertainty about the
+key must be at least as large as the uncertainty about the message. In other words, we
+must have at least one secret bit for every bit of information contained in the message.
+From an algorithmic perspective, perfect secrecy can be achieved by means of a simple
+procedure called a one-time pad (or Vernam’s cipher), an example of which is shown in
+Table 1.1 for the case of a binary message and a binary key. The codeword is formed by
+computing the binary addition (XOR) of each message bit with a separate key bit. If the
+key bits are independent and uniformly distributed, it can be shown that the codeword is
+statistically independent of the message. To recover the message, the legitimate receiver
+need only add the codeword and the secret key. On the other hand, the eavesdropper does
+not have access to the key; therefore, from her perspective, every message is equally
+likely and she cannot do better than randomly guessing the message bits.
+Although the one-time pad can achieve perfect secrecy with low complexity, its
+applicability is limited by the following requirements:
+• the legitimate partners must generate and store long keys consisting of random bits;
+• each key can be used only once (otherwise the cryptanalyst has a fair chance of
+discovering the key);
+• the key must be shared over a secure channel.
+To solve the problem of distributing long keys in a secure manner, we could be tempted
+to generate long pseudo-random sequences using a smaller seed. However, information
+theory shows that the uncertainty of the eavesdropper is upper bounded by the number
+of random key bits used. The smaller the key the greater the probability that the eavesdropper will succeed in extracting some information from the codeword. In this case,
+the only obstacle faced by the eavesdropper is computational complexity, which leads
+directly to the concept of computational security.
+The aforementioned caveats regarding the one-time pad are arguably responsible for
+the skepticism with which security practitioners dismiss the usefulness of informationtheoretic security. We shall now see that a closer look at the underlying communications
+model may actually yield the solution towards wider applicability.
+1.2 Secure communication over noisy channels
+As mentioned before, random noise is an intrinsic element of almost all physical communication channels. In an effort to understand the role of noise in the context of secure
+communications, Wyner introduced the wiretap channel model illustrated in Figure 1.2.
+The main differences between this approach and Shannon’s original secrecy system are
+that
+• the legitimate transmitter encodes a message M into a codeword Xn consisting of n
+symbols, which is sent over a noisy channel to the legitimate receiver;
+• the eavesdropper observes a noisy version, denoted by Zn, of the signal Yn available
+at the receiver.
+In addition, Wyner suggested a new definition for the secrecy condition. Instead of
+requiring the eavesdropper’s equivocation to be exactly equal to the entropy of the
+message, we now ask for the equivocation rate (1/n)H(M|Zn) to be arbitrarily close
+to the entropy rate of the message (1/n)H(M) for sufficiently large codeword length n.
+With this relaxed security constraint, it can be shown that there exist channel codes that
+asymptotically guarantee both an arbitrarily small probability of error at the intended
+receiver and secrecy. Such codes are colloquially known as wiretap codes. The maximum
+transmission rate that is achievable under these premises is called the secrecy capacity,
+and can be shown to be strictly positive whenever the eavesdropper’s observation Zn is
+“noisier” than Yn.
+In the seventies and eighties, the impact of Wyner’s results was limited due to several
+important obstacles. First, practical code constructions for the wiretap channel were not
+available. Second, the wiretap channel model restricts the eavesdropper by assuming that
